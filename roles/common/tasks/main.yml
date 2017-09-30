@@ -1,0 +1,21 @@
+- name: actualize apt
+  apt:
+          update_cache: yes
+          upgrade: dist
+- name: install pkgs
+  apt:
+          name={{ item }} state=present
+  with_items:
+          - vim
+          - nmap
+          - telnet
+          - apt-transport-https
+- name: configure locales
+  locale_gen: name={{ locale }} state=present
+- name: add user
+  user: name={{user.login}} groups=sudo shell=/bin/bash password={{user.password}} state=present
+- name: add ssh keys
+  authorized_key: user={{user.login}} key={{user.key}}
+- name: copy vimrc
+  copy: src="vimrc" dest="/home/{{user.login}}/.vimrc"
+

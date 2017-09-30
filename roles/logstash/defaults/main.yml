@@ -1,0 +1,4 @@
+keys_url:
+         - {url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch", keyserv: "", id: "" }
+repos:
+        - {url: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"}

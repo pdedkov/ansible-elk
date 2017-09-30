@@ -1,0 +1,6 @@
+user:
+        login: login
+        password: password
+        key: "{{ lookup('file', '~/.ssh/authorized_keys') }}"
+locale: ru_RU.UTF-8
+kibana_server_name: elk.lo

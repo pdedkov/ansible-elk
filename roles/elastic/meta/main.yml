@@ -1,0 +1,9 @@
+galaxy_info:
+        author: Pavel E. Dedkov
+        min_ansible_version: 2
+        platforms:
+                - name: Debian
+                  versions:
+                          - all
+        galaxy_tags: ['elasticsearch', 'debian']                   
+        dependencies: []

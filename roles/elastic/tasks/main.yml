@@ -1,0 +1,12 @@
+- name: add apt keys
+  apt_key: url={{ item.url }} state=present
+  with_items: "{{ keys_url }}"
+- name: add repos
+  apt_repository: repo={{ item.url }} state=present update_cache=yes
+  with_items: "{{ repos }}"
+- name: install elastic
+  apt: name={{ item }} state=present
+  with_items:
+          - openjdk-8-jre
+          - elasticsearch
+  notify: start elasticsearch          
