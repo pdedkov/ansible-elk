@@ -9,5 +9,7 @@
   with_items:
           - openjdk-8-jre
           - logstash
+- name: config logstash
+  template: backup=yes dest="/etc/logstash/conf.d/01-in-out.conf" src={{ logstash_config }}
   notify:
         - start logstash          

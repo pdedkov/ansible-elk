@@ -10,6 +10,7 @@
           - nmap
           - telnet
           - apt-transport-https
+          - curl
 - name: configure locales
   locale_gen: name={{ locale }} state=present
 - name: add user
