@@ -9,4 +9,5 @@
   with_items:
           - openjdk-8-jre
           - elasticsearch
+          - elasticsearch-curator
   notify: start elasticsearch          

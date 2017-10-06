@@ -1,14 +1,34 @@
 input {
-  beats {
-    port => 5044
-  }
+	beats {
+		port => 5044
+	}
 }
 
+filter {
+	grok {
+		match => ["message" , "%{COMBINEDAPACHELOG}+%{GREEDYDATA:extra_fields}"]
+		overwrite => [ "message" ]
+	}
+	mutate {
+		convert => ["response", "integer"]
+		convert => ["bytes", "integer"]
+		convert => ["responsetime", "float"]
+	}
+	geoip {
+		source => "clientip"
+		target => "geoip"
+		add_tag => ["nginx-geoip"]
+	}
+	date {
+		match => [ "timestamp" , "YYYY/MM/dd HH:mm:ss" ]
+		remove_field => [ "timestamp" ]
+	}
+}
 output {
   elasticsearch {
     manage_template => false
     hosts => "localhost:9200"
-    index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
-    document_type => "%{[@metadata][type]}"
+    index => "logstash-%{+YYYY.MM.dd}"
+    document_type => "logstash"
   }
 }
