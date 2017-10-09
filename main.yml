@@ -2,6 +2,7 @@
 - hosts: all
   roles:
         - role: common
+        - role: redis
         - role: elastic
         - role: logstash
         - role: kibana  
