@@ -1,2 +1,6 @@
 - name: install redis
   apt: name=redis-server state=present
+- name: config redis
+  template: dest="/etc/redis/redis.conf" src={{ redis_config }}
+  notify:
+          - restart redis

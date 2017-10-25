@@ -2,33 +2,42 @@ input {
 	beats {
 		port => 5044
 	}
+	redis {
+		data_type => "list"
+		key => "indexer"
+		host => "127.0.0.1"
+	}
 }
 
 filter {
-	grok {
-		match => ["message" , "%{COMBINEDAPACHELOG}+%{GREEDYDATA:extra_fields}"]
-		overwrite => [ "message" ]
-	}
-	mutate {
-		convert => ["response", "integer"]
-		convert => ["bytes", "integer"]
-		convert => ["responsetime", "float"]
-	}
-	geoip {
-		source => "clientip"
-		target => "geoip"
-		add_tag => ["nginx-geoip"]
-	}
-	date {
-		match => [ "timestamp" , "YYYY/MM/dd HH:mm:ss" ]
-		remove_field => [ "timestamp" ]
+	if  [fields][source_id] == "toolbox-nginx" {
+		grok {
+			match => ["message" , "%{COMBINEDAPACHELOG}+%{GREEDYDATA:extra_fields}"]
+			overwrite => [ "message" ]
+		}
+		mutate {
+			convert => ["response", "integer"]
+			convert => ["bytes", "integer"]
+			convert => ["responsetime", "float"]
+		}
+		geoip {
+			source => "clientip"
+			target => "geoip"
+			add_tag => ["nginx-geoip"]
+		}
+		date {
+			match => [ "timestamp" , "dd/MM/YYYY:HH:mm:ss" ]
+			remove_field => [ "timestamp" ]
+		}
+	} else {
+		mutate { add_field => { "[fields][source_id]" => "indexer" } }
 	}
 }
 output {
   elasticsearch {
     manage_template => false
     hosts => "localhost:9200"
-    index => "logstash-%{+YYYY.MM.dd}"
+    index => "%{[fields][source_id]}-%{+YYYY.MM.dd}"
     document_type => "logstash"
   }
 }
